@@ -1,26 +1,72 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { SmoothScrollProvider } from "@/components/SmoothScrollProvider";
+import { MagneticCursor } from "@/components/MagneticCursor";
+import { ScrollProgress } from "@/components/ScrollProgress";
+import { Navbar } from "@/components/Navbar";
+import { Hero } from "@/components/sections/Hero";
+import { LogoStrip } from "@/components/sections/LogoStrip";
+import { StatsSection } from "@/components/sections/StatsSection";
+import { CalculatorSection } from "@/components/sections/CalculatorSection";
+import { DemoSection } from "@/components/sections/DemoSection";
+import { HowItWorks } from "@/components/sections/HowItWorks";
+import { ReplacesTable } from "@/components/sections/ReplacesTable";
+import { FeaturesGrid } from "@/components/sections/FeaturesGrid";
+import { ChannelsSection } from "@/components/sections/ChannelsSection";
+import { PricingSection } from "@/components/sections/PricingSection";
+import { TwoPaths } from "@/components/sections/TwoPaths";
+import { FAQ } from "@/components/sections/FAQ";
+import { FinalCTA } from "@/components/sections/FinalCTA";
+import { Footer } from "@/components/sections/Footer";
 
 export const Route = createFileRoute("/")({
   component: Index,
+  head: () => ({
+    meta: [
+      {
+        title:
+          "Revenuro — Infraestructura comercial para inmobiliarias en México",
+      },
+      {
+        name: "description",
+        content:
+          "Responde, califica y agenda cada lead inmobiliario en menos de 12 segundos, 24/7. Sin perder oportunidades fuera de horario.",
+      },
+      {
+        property: "og:title",
+        content: "Revenuro — Sistema de ventas que no descansa",
+      },
+      {
+        property: "og:description",
+        content:
+          "El 62% de tus leads llegan cuando ya cerraste. Revenuro los atiende, califica y agenda — automáticamente.",
+      },
+      { property: "og:type", content: "website" },
+    ],
+  }),
 });
 
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
-}
-
 function Index() {
-  return <PlaceholderIndex />;
+  return (
+    <SmoothScrollProvider>
+      <ScrollProgress />
+      <MagneticCursor />
+      <Navbar />
+      <main className="overflow-hidden">
+        <Hero />
+        <LogoStrip />
+        <StatsSection />
+        <CalculatorSection />
+        <DemoSection />
+        <HowItWorks />
+        <ReplacesTable />
+        <FeaturesGrid />
+        <ChannelsSection />
+        <PricingSection />
+        <TwoPaths />
+        <FAQ />
+        <FinalCTA />
+        <Footer />
+      </main>
+    </SmoothScrollProvider>
+  );
 }
