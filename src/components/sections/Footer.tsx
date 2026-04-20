@@ -18,7 +18,7 @@ export function Footer() {
               className="text-[18px] font-bold text-[color:var(--platinum)]"
               style={{ letterSpacing: "0.08em" }}
             >
-              REVENURO
+              BREREV
             </span>
             <span className="text-[18px] font-bold text-[color:var(--electric)]">.</span>
           </div>
@@ -44,7 +44,7 @@ export function Footer() {
             className="text-[13px] text-[color:var(--slate)]"
             style={{ opacity: 0.6 }}
           >
-            © 2026 Revenuro. Todos los derechos reservados.
+            © 2026 Brerev. Todos los derechos reservados.
           </p>
         </div>
       </div>

@@ -29,14 +29,14 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Revenuro — Infraestructura comercial para inmobiliarias" },
+      { title: "Brerev — Infraestructura comercial para inmobiliarias" },
       {
         name: "description",
         content:
           "Responde, califica y agenda cada lead inmobiliario en menos de 12 segundos, 24/7.",
       },
-      { name: "author", content: "Revenuro" },
-      { property: "og:title", content: "Revenuro" },
+      { name: "author", content: "Brerev" },
+      { property: "og:title", content: "Brerev" },
       { property: "og:description", content: "Sistema de ventas que no descansa." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

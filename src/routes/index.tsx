@@ -24,7 +24,7 @@ export const Route = createFileRoute("/")({
     meta: [
       {
         title:
-          "Revenuro — Infraestructura comercial para inmobiliarias en México",
+          "Brerev — Infraestructura comercial para inmobiliarias en México",
       },
       {
         name: "description",
@@ -33,12 +33,12 @@ export const Route = createFileRoute("/")({
       },
       {
         property: "og:title",
-        content: "Revenuro — Sistema de ventas que no descansa",
+        content: "Brerev — Sistema de ventas que no descansa",
       },
       {
         property: "og:description",
         content:
-          "El 62% de tus leads llegan cuando ya cerraste. Revenuro los atiende, califica y agenda — automáticamente.",
+          "El 62% de tus leads llegan cuando ya cerraste. Brerev los atiende, califica y agenda — automáticamente.",
       },
       { property: "og:type", content: "website" },
     ],
