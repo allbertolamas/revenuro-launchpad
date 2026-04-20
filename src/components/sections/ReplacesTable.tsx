@@ -79,7 +79,7 @@ export function ReplacesTable() {
               >
                 Recomendado
               </span>
-              Revenuro
+              Brerev
             </div>
           </div>
 

@@ -169,7 +169,7 @@ export function HowItWorks() {
               }}
             >
               <div className="mb-5 text-[14px] font-semibold uppercase tracking-wider text-[color:var(--red-loss)]">
-                Sin Revenuro
+                Sin Brerev
               </div>
               <ul className="space-y-3">
                 {WITHOUT.map((t, i) => (
@@ -200,7 +200,7 @@ export function HowItWorks() {
               }}
             >
               <div className="mb-5 text-[14px] font-semibold uppercase tracking-wider text-[color:var(--success)]">
-                Con Revenuro
+                Con Brerev
               </div>
               <ul className="space-y-3">
                 {WITH.map((t, i) => (

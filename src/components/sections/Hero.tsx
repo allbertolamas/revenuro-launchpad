@@ -126,7 +126,7 @@ function DashboardMockup() {
           <span className="h-3 w-3 rounded-full bg-[#28C840]" />
         </div>
         <span className="text-[12px] font-medium text-[color:var(--slate)]">
-          Revenuro — Dashboard
+          Brerev — Dashboard
         </span>
         <div className="w-12" />
       </div>
@@ -270,7 +270,7 @@ export function Hero() {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="mt-6 max-w-[480px] text-[19px] leading-[1.65] text-[color:var(--slate-light)]"
           >
-            Revenuro responde, califica y agenda cada lead en menos de 12 segundos — a cualquier
+            Brerev responde, califica y agenda cada lead en menos de 12 segundos — a cualquier
             hora, por cualquier canal. Sin depender de que alguien esté disponible.
           </motion.p>
 

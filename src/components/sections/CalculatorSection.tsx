@@ -155,7 +155,7 @@ export function CalculatorSection() {
               <span className="text-[20px] sm:text-[24px] font-medium opacity-70">/mes</span>
             </motion.div>
             <p className="mt-3 text-center text-[16px] sm:text-[17px] font-semibold text-[color:var(--success)]">
-              Con Revenuro, ese número puede ser $0.
+              Con Brerev, ese número puede ser $0.
             </p>
           </div>
 

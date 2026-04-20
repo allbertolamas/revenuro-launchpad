@@ -1,3 +1,5 @@
+import brerevLogo from "@/assets/brerev-logo.png";
+
 export function Footer() {
   const links = ["Cómo funciona", "Precios", "Demo", "Privacidad", "Términos"];
   const hrefs = ["#como-funciona", "#precios", "#demo", "#", "#"];
@@ -13,15 +15,16 @@ export function Footer() {
     >
       <div className="mx-auto max-w-[1200px] px-6">
         <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
-          <div className="flex items-baseline gap-0.5">
-            <span
-              className="text-[18px] font-bold text-[color:var(--platinum)]"
-              style={{ letterSpacing: "0.08em" }}
-            >
-              REVENURO
-            </span>
-            <span className="text-[18px] font-bold text-[color:var(--electric)]">.</span>
-          </div>
+          <img
+            src={brerevLogo}
+            alt="Brerev"
+            className="h-6 w-auto select-none"
+            style={{
+              filter:
+                "drop-shadow(0 0 14px rgba(30,95,255,0.3)) drop-shadow(0 2px 4px rgba(0,0,0,0.4))",
+            }}
+            draggable={false}
+          />
 
           <nav className="flex flex-wrap justify-center gap-6 sm:gap-8">
             {links.map((l, i) => (
@@ -44,7 +47,7 @@ export function Footer() {
             className="text-[13px] text-[color:var(--slate)]"
             style={{ opacity: 0.6 }}
           >
-            © 2026 Revenuro. Todos los derechos reservados.
+            © 2026 Brerev. Todos los derechos reservados.
           </p>
         </div>
       </div>
