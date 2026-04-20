@@ -171,13 +171,13 @@ function DemoPage() {
                   </button>
                 </>
               ) : (
-                <div className="w-full">
-                  {/* @ts-expect-error - custom element from ElevenLabs */}
-                  <elevenlabs-convai
-                    agent-id="AGENT_ID_PLACEHOLDER"
-                    style={{ width: "100%", minHeight: "300px" }}
-                  ></elevenlabs-convai>
-                </div>
+                <div
+                  className="w-full"
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      '<elevenlabs-convai agent-id="AGENT_ID_PLACEHOLDER" style="width:100%;min-height:300px;"></elevenlabs-convai>',
+                  }}
+                />
               )}
             </div>
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import brerevLogo from "@/assets/brerev-logo.png";
 
 export function Navbar() {
@@ -15,9 +16,8 @@ export function Navbar() {
   }, []);
 
   const navLinks = [
-    { label: "Cómo funciona", href: "#como-funciona" },
-    { label: "Precios", href: "#precios" },
-    { label: "Demo en vivo", href: "#demo" },
+    { label: "Precios", to: "/precios" as const },
+    { label: "Demo en vivo", to: "/demo" as const },
   ];
 
   return (
@@ -31,8 +31,8 @@ export function Navbar() {
         }}
       >
         <div className="mx-auto flex h-[72px] max-w-[1200px] items-center justify-between px-6">
-          <a
-            href="#top"
+          <Link
+            to="/"
             className="group flex items-center gap-2 transition-transform duration-300 hover:scale-[1.02]"
             aria-label="Brerev"
           >
@@ -46,17 +46,18 @@ export function Navbar() {
               }}
               draggable={false}
             />
-          </a>
+          </Link>
 
           <nav className="hidden items-center gap-1 md:flex">
             {navLinks.map((l, i) => (
-              <div key={l.href} className="flex items-center gap-1">
-                <a
-                  href={l.href}
+              <div key={l.to} className="flex items-center gap-1">
+                <Link
+                  to={l.to}
                   className="px-3 py-2 text-[15px] font-medium text-[color:var(--slate)] transition-colors duration-200 hover:text-[color:var(--platinum)]"
+                  activeProps={{ style: { color: "var(--platinum)" } }}
                 >
                   {l.label}
-                </a>
+                </Link>
                 {i < navLinks.length - 1 && (
                   <span className="text-[color:var(--steel-light)]">·</span>
                 )}
@@ -65,15 +66,15 @@ export function Navbar() {
           </nav>
 
           <div className="hidden items-center gap-3 md:flex">
-            <a
-              href="#"
+            <Link
+              to="/login"
               className="text-[14px] font-medium text-[color:var(--slate)] transition-colors hover:text-[color:var(--platinum)]"
             >
               Iniciar sesión
-            </a>
-            <a href="#cta-final" className="btn-primary !py-2.5 !px-5 text-[14px]">
+            </Link>
+            <Link to="/registro" className="btn-primary !py-2.5 !px-5 text-[14px]">
               Probar gratis <span className="arrow">→</span>
-            </a>
+            </Link>
           </div>
 
           <button
@@ -98,30 +99,30 @@ export function Navbar() {
           >
             <div className="flex flex-col gap-1 p-6">
               {navLinks.map((l) => (
-                <a
-                  key={l.href}
-                  href={l.href}
+                <Link
+                  key={l.to}
+                  to={l.to}
                   onClick={() => setOpen(false)}
                   className="py-3 text-[18px] font-medium text-[color:var(--platinum)]"
                 >
                   {l.label}
-                </a>
+                </Link>
               ))}
               <div className="my-4 h-px bg-[color:var(--steel)]" />
-              <a
-                href="#"
+              <Link
+                to="/login"
                 className="py-3 text-[16px] text-[color:var(--slate)]"
                 onClick={() => setOpen(false)}
               >
                 Iniciar sesión
-              </a>
-              <a
-                href="#cta-final"
+              </Link>
+              <Link
+                to="/registro"
                 onClick={() => setOpen(false)}
                 className="btn-primary mt-4 justify-center"
               >
                 Probar gratis <span className="arrow">→</span>
-              </a>
+              </Link>
             </div>
           </motion.div>
         )}
