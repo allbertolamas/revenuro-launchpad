@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import brerevLogo from "@/assets/brerev-logo.png";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -30,14 +31,21 @@ export function Navbar() {
         }}
       >
         <div className="mx-auto flex h-[72px] max-w-[1200px] items-center justify-between px-6">
-          <a href="#top" className="flex items-baseline gap-0.5">
-            <span
-              className="text-[20px] font-bold text-[color:var(--platinum)]"
-              style={{ letterSpacing: "0.08em" }}
-            >
-              REVENURO
-            </span>
-            <span className="text-[20px] font-bold text-[color:var(--electric)]">.</span>
+          <a
+            href="#top"
+            className="group flex items-center gap-2 transition-transform duration-300 hover:scale-[1.02]"
+            aria-label="Brerev"
+          >
+            <img
+              src={brerevLogo}
+              alt="Brerev"
+              className="h-7 w-auto select-none"
+              style={{
+                filter:
+                  "drop-shadow(0 0 18px rgba(30,95,255,0.35)) drop-shadow(0 2px 4px rgba(0,0,0,0.4))",
+              }}
+              draggable={false}
+            />
           </a>
 
           <nav className="hidden items-center gap-1 md:flex">
