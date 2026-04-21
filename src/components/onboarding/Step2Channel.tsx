@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, Loader2, Phone, MessageSquare, Globe } from "lucide-react";
+import { Check, Loader2, Phone, Globe } from "lucide-react";
 import { Field } from "./Field";
 import type { WizardData } from "./types";
 
