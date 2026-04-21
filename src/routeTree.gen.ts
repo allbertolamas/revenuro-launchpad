@@ -14,7 +14,9 @@ import { Route as PreciosRouteImport } from './routes/precios'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DemoRouteImport } from './routes/demo'
+import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppAppDashboardRouteImport } from './routes/_app.app.dashboard'
 
 const RegistroRoute = RegistroRouteImport.update({
   id: '/registro',
@@ -41,10 +43,19 @@ const DemoRoute = DemoRouteImport.update({
   path: '/demo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AppAppDashboardRoute = AppAppDashboardRouteImport.update({
+  id: '/app/dashboard',
+  path: '/app/dashboard',
+  getParentRoute: () => AppRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -54,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/precios': typeof PreciosRoute
   '/registro': typeof RegistroRoute
+  '/app/dashboard': typeof AppAppDashboardRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,33 +74,53 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/precios': typeof PreciosRoute
   '/registro': typeof RegistroRoute
+  '/app/dashboard': typeof AppAppDashboardRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_app': typeof AppRouteWithChildren
   '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/precios': typeof PreciosRoute
   '/registro': typeof RegistroRoute
+  '/_app/app/dashboard': typeof AppAppDashboardRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/demo' | '/login' | '/onboarding' | '/precios' | '/registro'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/demo' | '/login' | '/onboarding' | '/precios' | '/registro'
-  id:
-    | '__root__'
+  fullPaths:
     | '/'
     | '/demo'
     | '/login'
     | '/onboarding'
     | '/precios'
     | '/registro'
+    | '/app/dashboard'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/demo'
+    | '/login'
+    | '/onboarding'
+    | '/precios'
+    | '/registro'
+    | '/app/dashboard'
+  id:
+    | '__root__'
+    | '/'
+    | '/_app'
+    | '/demo'
+    | '/login'
+    | '/onboarding'
+    | '/precios'
+    | '/registro'
+    | '/_app/app/dashboard'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
   DemoRoute: typeof DemoRoute
   LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRoute
@@ -133,6 +165,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -140,11 +179,29 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/app/dashboard': {
+      id: '/_app/app/dashboard'
+      path: '/app/dashboard'
+      fullPath: '/app/dashboard'
+      preLoaderRoute: typeof AppAppDashboardRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
+interface AppRouteChildren {
+  AppAppDashboardRoute: typeof AppAppDashboardRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppAppDashboardRoute: AppAppDashboardRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
   DemoRoute: DemoRoute,
   LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRoute,
