@@ -394,7 +394,10 @@ function RegistroPage() {
                     ← Anterior
                   </button>
                   <button
-                    onClick={() => navigate({ to: "/onboarding" })}
+                    onClick={() => {
+                      window.localStorage.setItem("brerev_logged_in", "true");
+                      navigate({ to: "/onboarding" });
+                    }}
                     className="btn-primary flex-1 justify-center"
                   >
                     Activar prueba gratuita <span className="arrow">→</span>
