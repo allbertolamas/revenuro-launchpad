@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, Lock } from "lucide-react";
@@ -41,6 +41,7 @@ function GoogleIcon() {
 
 function RegistroPage() {
   const { plan: initialPlan } = Route.useSearch();
+  const navigate = useNavigate();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [plan, setPlan] = useState<keyof typeof PLANS>(initialPlan ?? "engine");
   const [yearly, setYearly] = useState(false);
@@ -393,7 +394,7 @@ function RegistroPage() {
                     ← Anterior
                   </button>
                   <button
-                    onClick={() => alert("Stripe pendiente: se conecta en la siguiente fase.")}
+                    onClick={() => navigate({ to: "/onboarding" })}
                     className="btn-primary flex-1 justify-center"
                   >
                     Activar prueba gratuita <span className="arrow">→</span>
