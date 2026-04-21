@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegistroRouteImport } from './routes/registro'
 import { Route as PreciosRouteImport } from './routes/precios'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as IndexRouteImport } from './routes/index'
@@ -23,6 +24,11 @@ const RegistroRoute = RegistroRouteImport.update({
 const PreciosRoute = PreciosRouteImport.update({
   id: '/precios',
   path: '/precios',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -45,6 +51,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
   '/precios': typeof PreciosRoute
   '/registro': typeof RegistroRoute
 }
@@ -52,6 +59,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
   '/precios': typeof PreciosRoute
   '/registro': typeof RegistroRoute
 }
@@ -60,21 +68,30 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
   '/precios': typeof PreciosRoute
   '/registro': typeof RegistroRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/demo' | '/login' | '/precios' | '/registro'
+  fullPaths: '/' | '/demo' | '/login' | '/onboarding' | '/precios' | '/registro'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/demo' | '/login' | '/precios' | '/registro'
-  id: '__root__' | '/' | '/demo' | '/login' | '/precios' | '/registro'
+  to: '/' | '/demo' | '/login' | '/onboarding' | '/precios' | '/registro'
+  id:
+    | '__root__'
+    | '/'
+    | '/demo'
+    | '/login'
+    | '/onboarding'
+    | '/precios'
+    | '/registro'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DemoRoute: typeof DemoRoute
   LoginRoute: typeof LoginRoute
+  OnboardingRoute: typeof OnboardingRoute
   PreciosRoute: typeof PreciosRoute
   RegistroRoute: typeof RegistroRoute
 }
@@ -93,6 +110,13 @@ declare module '@tanstack/react-router' {
       path: '/precios'
       fullPath: '/precios'
       preLoaderRoute: typeof PreciosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -123,6 +147,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DemoRoute: DemoRoute,
   LoginRoute: LoginRoute,
+  OnboardingRoute: OnboardingRoute,
   PreciosRoute: PreciosRoute,
   RegistroRoute: RegistroRoute,
 }
