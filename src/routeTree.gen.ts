@@ -14,7 +14,15 @@ import { Route as PreciosRouteImport } from './routes/precios'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DemoRouteImport } from './routes/demo'
+import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppAppMensajesRouteImport } from './routes/_app.app.mensajes'
+import { Route as AppAppLeadsRouteImport } from './routes/_app.app.leads'
+import { Route as AppAppFacturacionRouteImport } from './routes/_app.app.facturacion'
+import { Route as AppAppDashboardRouteImport } from './routes/_app.app.dashboard'
+import { Route as AppAppConversacionesRouteImport } from './routes/_app.app.conversaciones'
+import { Route as AppAppConfiguracionRouteImport } from './routes/_app.app.configuracion'
+import { Route as AppAppCitasRouteImport } from './routes/_app.app.citas'
 
 const RegistroRoute = RegistroRouteImport.update({
   id: '/registro',
@@ -41,10 +49,49 @@ const DemoRoute = DemoRouteImport.update({
   path: '/demo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AppAppMensajesRoute = AppAppMensajesRouteImport.update({
+  id: '/app/mensajes',
+  path: '/app/mensajes',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAppLeadsRoute = AppAppLeadsRouteImport.update({
+  id: '/app/leads',
+  path: '/app/leads',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAppFacturacionRoute = AppAppFacturacionRouteImport.update({
+  id: '/app/facturacion',
+  path: '/app/facturacion',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAppDashboardRoute = AppAppDashboardRouteImport.update({
+  id: '/app/dashboard',
+  path: '/app/dashboard',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAppConversacionesRoute = AppAppConversacionesRouteImport.update({
+  id: '/app/conversaciones',
+  path: '/app/conversaciones',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAppConfiguracionRoute = AppAppConfiguracionRouteImport.update({
+  id: '/app/configuracion',
+  path: '/app/configuracion',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAppCitasRoute = AppAppCitasRouteImport.update({
+  id: '/app/citas',
+  path: '/app/citas',
+  getParentRoute: () => AppRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -54,6 +101,13 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/precios': typeof PreciosRoute
   '/registro': typeof RegistroRoute
+  '/app/citas': typeof AppAppCitasRoute
+  '/app/configuracion': typeof AppAppConfiguracionRoute
+  '/app/conversaciones': typeof AppAppConversacionesRoute
+  '/app/dashboard': typeof AppAppDashboardRoute
+  '/app/facturacion': typeof AppAppFacturacionRoute
+  '/app/leads': typeof AppAppLeadsRoute
+  '/app/mensajes': typeof AppAppMensajesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,33 +116,83 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/precios': typeof PreciosRoute
   '/registro': typeof RegistroRoute
+  '/app/citas': typeof AppAppCitasRoute
+  '/app/configuracion': typeof AppAppConfiguracionRoute
+  '/app/conversaciones': typeof AppAppConversacionesRoute
+  '/app/dashboard': typeof AppAppDashboardRoute
+  '/app/facturacion': typeof AppAppFacturacionRoute
+  '/app/leads': typeof AppAppLeadsRoute
+  '/app/mensajes': typeof AppAppMensajesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_app': typeof AppRouteWithChildren
   '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/precios': typeof PreciosRoute
   '/registro': typeof RegistroRoute
+  '/_app/app/citas': typeof AppAppCitasRoute
+  '/_app/app/configuracion': typeof AppAppConfiguracionRoute
+  '/_app/app/conversaciones': typeof AppAppConversacionesRoute
+  '/_app/app/dashboard': typeof AppAppDashboardRoute
+  '/_app/app/facturacion': typeof AppAppFacturacionRoute
+  '/_app/app/leads': typeof AppAppLeadsRoute
+  '/_app/app/mensajes': typeof AppAppMensajesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/demo' | '/login' | '/onboarding' | '/precios' | '/registro'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/demo' | '/login' | '/onboarding' | '/precios' | '/registro'
-  id:
-    | '__root__'
+  fullPaths:
     | '/'
     | '/demo'
     | '/login'
     | '/onboarding'
     | '/precios'
     | '/registro'
+    | '/app/citas'
+    | '/app/configuracion'
+    | '/app/conversaciones'
+    | '/app/dashboard'
+    | '/app/facturacion'
+    | '/app/leads'
+    | '/app/mensajes'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/demo'
+    | '/login'
+    | '/onboarding'
+    | '/precios'
+    | '/registro'
+    | '/app/citas'
+    | '/app/configuracion'
+    | '/app/conversaciones'
+    | '/app/dashboard'
+    | '/app/facturacion'
+    | '/app/leads'
+    | '/app/mensajes'
+  id:
+    | '__root__'
+    | '/'
+    | '/_app'
+    | '/demo'
+    | '/login'
+    | '/onboarding'
+    | '/precios'
+    | '/registro'
+    | '/_app/app/citas'
+    | '/_app/app/configuracion'
+    | '/_app/app/conversaciones'
+    | '/_app/app/dashboard'
+    | '/_app/app/facturacion'
+    | '/_app/app/leads'
+    | '/_app/app/mensajes'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
   DemoRoute: typeof DemoRoute
   LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRoute
@@ -133,6 +237,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -140,11 +251,83 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/app/mensajes': {
+      id: '/_app/app/mensajes'
+      path: '/app/mensajes'
+      fullPath: '/app/mensajes'
+      preLoaderRoute: typeof AppAppMensajesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/app/leads': {
+      id: '/_app/app/leads'
+      path: '/app/leads'
+      fullPath: '/app/leads'
+      preLoaderRoute: typeof AppAppLeadsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/app/facturacion': {
+      id: '/_app/app/facturacion'
+      path: '/app/facturacion'
+      fullPath: '/app/facturacion'
+      preLoaderRoute: typeof AppAppFacturacionRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/app/dashboard': {
+      id: '/_app/app/dashboard'
+      path: '/app/dashboard'
+      fullPath: '/app/dashboard'
+      preLoaderRoute: typeof AppAppDashboardRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/app/conversaciones': {
+      id: '/_app/app/conversaciones'
+      path: '/app/conversaciones'
+      fullPath: '/app/conversaciones'
+      preLoaderRoute: typeof AppAppConversacionesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/app/configuracion': {
+      id: '/_app/app/configuracion'
+      path: '/app/configuracion'
+      fullPath: '/app/configuracion'
+      preLoaderRoute: typeof AppAppConfiguracionRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/app/citas': {
+      id: '/_app/app/citas'
+      path: '/app/citas'
+      fullPath: '/app/citas'
+      preLoaderRoute: typeof AppAppCitasRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
+interface AppRouteChildren {
+  AppAppCitasRoute: typeof AppAppCitasRoute
+  AppAppConfiguracionRoute: typeof AppAppConfiguracionRoute
+  AppAppConversacionesRoute: typeof AppAppConversacionesRoute
+  AppAppDashboardRoute: typeof AppAppDashboardRoute
+  AppAppFacturacionRoute: typeof AppAppFacturacionRoute
+  AppAppLeadsRoute: typeof AppAppLeadsRoute
+  AppAppMensajesRoute: typeof AppAppMensajesRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppAppCitasRoute: AppAppCitasRoute,
+  AppAppConfiguracionRoute: AppAppConfiguracionRoute,
+  AppAppConversacionesRoute: AppAppConversacionesRoute,
+  AppAppDashboardRoute: AppAppDashboardRoute,
+  AppAppFacturacionRoute: AppAppFacturacionRoute,
+  AppAppLeadsRoute: AppAppLeadsRoute,
+  AppAppMensajesRoute: AppAppMensajesRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
   DemoRoute: DemoRoute,
   LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRoute,

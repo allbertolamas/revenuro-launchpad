@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react";
@@ -39,6 +39,19 @@ function GoogleIcon() {
 
 function LoginPage() {
   const [showPwd, setShowPwd] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Guard simulado — sin auth real todavía
+    window.localStorage.setItem("brerev_logged_in", "true");
+    navigate({ to: "/app/dashboard" });
+  };
+
+  const handleGoogle = () => {
+    window.localStorage.setItem("brerev_logged_in", "true");
+    navigate({ to: "/app/dashboard" });
+  };
 
   return (
     <div className="grid min-h-screen grid-cols-1 lg:grid-cols-[55%_45%]">
@@ -80,6 +93,7 @@ function LoginPage() {
 
           <button
             type="button"
+            onClick={handleGoogle}
             className="flex w-full items-center justify-center gap-3 rounded-[10px] border px-4 py-3.5 text-[15px] font-semibold text-[color:var(--platinum)] transition-all hover:bg-white/10"
             style={{
               background: "rgba(255,255,255,0.06)",
@@ -96,13 +110,7 @@ function LoginPage() {
             <div className="h-px flex-1" style={{ background: "var(--steel)" }} />
           </div>
 
-          <form
-            className="space-y-4"
-            onSubmit={(e) => {
-              e.preventDefault();
-              alert("Auth pendiente: conectar con Clerk en la siguiente fase.");
-            }}
-          >
+          <form className="space-y-4" onSubmit={handleLogin}>
             <FormField label="Correo electrónico" type="email" required placeholder="tu@correo.com" />
             <div>
               <label className="mb-1.5 block text-[13px] font-medium text-[color:var(--slate-light)]">
