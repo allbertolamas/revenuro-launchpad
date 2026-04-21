@@ -327,6 +327,3 @@ function RadioRow({
     </button>
   );
 }
-
-// Avoid unused import warning
-void MessageSquare;
