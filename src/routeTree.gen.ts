@@ -9,21 +9,32 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as StatusRouteImport } from './routes/status'
 import { Route as RegistroRouteImport } from './routes/registro'
 import { Route as PreciosRouteImport } from './routes/precios'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DemoRouteImport } from './routes/demo'
+import { Route as AyudaRouteImport } from './routes/ayuda'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppAppReporteRouteImport } from './routes/_app.app.reporte'
+import { Route as AppAppNotificacionesRouteImport } from './routes/_app.app.notificaciones'
 import { Route as AppAppMensajesRouteImport } from './routes/_app.app.mensajes'
 import { Route as AppAppLeadsRouteImport } from './routes/_app.app.leads'
+import { Route as AppAppIntegracionesRouteImport } from './routes/_app.app.integraciones'
 import { Route as AppAppFacturacionRouteImport } from './routes/_app.app.facturacion'
 import { Route as AppAppDashboardRouteImport } from './routes/_app.app.dashboard'
 import { Route as AppAppConversacionesRouteImport } from './routes/_app.app.conversaciones'
 import { Route as AppAppConfiguracionRouteImport } from './routes/_app.app.configuracion'
 import { Route as AppAppCitasRouteImport } from './routes/_app.app.citas'
+import { Route as AppAppBienvenidaRouteImport } from './routes/_app.app.bienvenida'
 
+const StatusRoute = StatusRouteImport.update({
+  id: '/status',
+  path: '/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RegistroRoute = RegistroRouteImport.update({
   id: '/registro',
   path: '/registro',
@@ -49,6 +60,11 @@ const DemoRoute = DemoRouteImport.update({
   path: '/demo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AyudaRoute = AyudaRouteImport.update({
+  id: '/ayuda',
+  path: '/ayuda',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppRoute = AppRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
@@ -58,6 +74,16 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppAppReporteRoute = AppAppReporteRouteImport.update({
+  id: '/app/reporte',
+  path: '/app/reporte',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAppNotificacionesRoute = AppAppNotificacionesRouteImport.update({
+  id: '/app/notificaciones',
+  path: '/app/notificaciones',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAppMensajesRoute = AppAppMensajesRouteImport.update({
   id: '/app/mensajes',
   path: '/app/mensajes',
@@ -66,6 +92,11 @@ const AppAppMensajesRoute = AppAppMensajesRouteImport.update({
 const AppAppLeadsRoute = AppAppLeadsRouteImport.update({
   id: '/app/leads',
   path: '/app/leads',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAppIntegracionesRoute = AppAppIntegracionesRouteImport.update({
+  id: '/app/integraciones',
+  path: '/app/integraciones',
   getParentRoute: () => AppRoute,
 } as any)
 const AppAppFacturacionRoute = AppAppFacturacionRouteImport.update({
@@ -93,115 +124,165 @@ const AppAppCitasRoute = AppAppCitasRouteImport.update({
   path: '/app/citas',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAppBienvenidaRoute = AppAppBienvenidaRouteImport.update({
+  id: '/app/bienvenida',
+  path: '/app/bienvenida',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ayuda': typeof AyudaRoute
   '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/precios': typeof PreciosRoute
   '/registro': typeof RegistroRoute
+  '/status': typeof StatusRoute
+  '/app/bienvenida': typeof AppAppBienvenidaRoute
   '/app/citas': typeof AppAppCitasRoute
   '/app/configuracion': typeof AppAppConfiguracionRoute
   '/app/conversaciones': typeof AppAppConversacionesRoute
   '/app/dashboard': typeof AppAppDashboardRoute
   '/app/facturacion': typeof AppAppFacturacionRoute
+  '/app/integraciones': typeof AppAppIntegracionesRoute
   '/app/leads': typeof AppAppLeadsRoute
   '/app/mensajes': typeof AppAppMensajesRoute
+  '/app/notificaciones': typeof AppAppNotificacionesRoute
+  '/app/reporte': typeof AppAppReporteRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ayuda': typeof AyudaRoute
   '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/precios': typeof PreciosRoute
   '/registro': typeof RegistroRoute
+  '/status': typeof StatusRoute
+  '/app/bienvenida': typeof AppAppBienvenidaRoute
   '/app/citas': typeof AppAppCitasRoute
   '/app/configuracion': typeof AppAppConfiguracionRoute
   '/app/conversaciones': typeof AppAppConversacionesRoute
   '/app/dashboard': typeof AppAppDashboardRoute
   '/app/facturacion': typeof AppAppFacturacionRoute
+  '/app/integraciones': typeof AppAppIntegracionesRoute
   '/app/leads': typeof AppAppLeadsRoute
   '/app/mensajes': typeof AppAppMensajesRoute
+  '/app/notificaciones': typeof AppAppNotificacionesRoute
+  '/app/reporte': typeof AppAppReporteRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_app': typeof AppRouteWithChildren
+  '/ayuda': typeof AyudaRoute
   '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/precios': typeof PreciosRoute
   '/registro': typeof RegistroRoute
+  '/status': typeof StatusRoute
+  '/_app/app/bienvenida': typeof AppAppBienvenidaRoute
   '/_app/app/citas': typeof AppAppCitasRoute
   '/_app/app/configuracion': typeof AppAppConfiguracionRoute
   '/_app/app/conversaciones': typeof AppAppConversacionesRoute
   '/_app/app/dashboard': typeof AppAppDashboardRoute
   '/_app/app/facturacion': typeof AppAppFacturacionRoute
+  '/_app/app/integraciones': typeof AppAppIntegracionesRoute
   '/_app/app/leads': typeof AppAppLeadsRoute
   '/_app/app/mensajes': typeof AppAppMensajesRoute
+  '/_app/app/notificaciones': typeof AppAppNotificacionesRoute
+  '/_app/app/reporte': typeof AppAppReporteRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/ayuda'
     | '/demo'
     | '/login'
     | '/onboarding'
     | '/precios'
     | '/registro'
+    | '/status'
+    | '/app/bienvenida'
     | '/app/citas'
     | '/app/configuracion'
     | '/app/conversaciones'
     | '/app/dashboard'
     | '/app/facturacion'
+    | '/app/integraciones'
     | '/app/leads'
     | '/app/mensajes'
+    | '/app/notificaciones'
+    | '/app/reporte'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/ayuda'
     | '/demo'
     | '/login'
     | '/onboarding'
     | '/precios'
     | '/registro'
+    | '/status'
+    | '/app/bienvenida'
     | '/app/citas'
     | '/app/configuracion'
     | '/app/conversaciones'
     | '/app/dashboard'
     | '/app/facturacion'
+    | '/app/integraciones'
     | '/app/leads'
     | '/app/mensajes'
+    | '/app/notificaciones'
+    | '/app/reporte'
   id:
     | '__root__'
     | '/'
     | '/_app'
+    | '/ayuda'
     | '/demo'
     | '/login'
     | '/onboarding'
     | '/precios'
     | '/registro'
+    | '/status'
+    | '/_app/app/bienvenida'
     | '/_app/app/citas'
     | '/_app/app/configuracion'
     | '/_app/app/conversaciones'
     | '/_app/app/dashboard'
     | '/_app/app/facturacion'
+    | '/_app/app/integraciones'
     | '/_app/app/leads'
     | '/_app/app/mensajes'
+    | '/_app/app/notificaciones'
+    | '/_app/app/reporte'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
+  AyudaRoute: typeof AyudaRoute
   DemoRoute: typeof DemoRoute
   LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRoute
   PreciosRoute: typeof PreciosRoute
   RegistroRoute: typeof RegistroRoute
+  StatusRoute: typeof StatusRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/status': {
+      id: '/status'
+      path: '/status'
+      fullPath: '/status'
+      preLoaderRoute: typeof StatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/registro': {
       id: '/registro'
       path: '/registro'
@@ -237,6 +318,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ayuda': {
+      id: '/ayuda'
+      path: '/ayuda'
+      fullPath: '/ayuda'
+      preLoaderRoute: typeof AyudaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_app': {
       id: '/_app'
       path: ''
@@ -251,6 +339,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/app/reporte': {
+      id: '/_app/app/reporte'
+      path: '/app/reporte'
+      fullPath: '/app/reporte'
+      preLoaderRoute: typeof AppAppReporteRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/app/notificaciones': {
+      id: '/_app/app/notificaciones'
+      path: '/app/notificaciones'
+      fullPath: '/app/notificaciones'
+      preLoaderRoute: typeof AppAppNotificacionesRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/app/mensajes': {
       id: '/_app/app/mensajes'
       path: '/app/mensajes'
@@ -263,6 +365,13 @@ declare module '@tanstack/react-router' {
       path: '/app/leads'
       fullPath: '/app/leads'
       preLoaderRoute: typeof AppAppLeadsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/app/integraciones': {
+      id: '/_app/app/integraciones'
+      path: '/app/integraciones'
+      fullPath: '/app/integraciones'
+      preLoaderRoute: typeof AppAppIntegracionesRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/app/facturacion': {
@@ -300,27 +409,42 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAppCitasRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/app/bienvenida': {
+      id: '/_app/app/bienvenida'
+      path: '/app/bienvenida'
+      fullPath: '/app/bienvenida'
+      preLoaderRoute: typeof AppAppBienvenidaRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
+  AppAppBienvenidaRoute: typeof AppAppBienvenidaRoute
   AppAppCitasRoute: typeof AppAppCitasRoute
   AppAppConfiguracionRoute: typeof AppAppConfiguracionRoute
   AppAppConversacionesRoute: typeof AppAppConversacionesRoute
   AppAppDashboardRoute: typeof AppAppDashboardRoute
   AppAppFacturacionRoute: typeof AppAppFacturacionRoute
+  AppAppIntegracionesRoute: typeof AppAppIntegracionesRoute
   AppAppLeadsRoute: typeof AppAppLeadsRoute
   AppAppMensajesRoute: typeof AppAppMensajesRoute
+  AppAppNotificacionesRoute: typeof AppAppNotificacionesRoute
+  AppAppReporteRoute: typeof AppAppReporteRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppAppBienvenidaRoute: AppAppBienvenidaRoute,
   AppAppCitasRoute: AppAppCitasRoute,
   AppAppConfiguracionRoute: AppAppConfiguracionRoute,
   AppAppConversacionesRoute: AppAppConversacionesRoute,
   AppAppDashboardRoute: AppAppDashboardRoute,
   AppAppFacturacionRoute: AppAppFacturacionRoute,
+  AppAppIntegracionesRoute: AppAppIntegracionesRoute,
   AppAppLeadsRoute: AppAppLeadsRoute,
   AppAppMensajesRoute: AppAppMensajesRoute,
+  AppAppNotificacionesRoute: AppAppNotificacionesRoute,
+  AppAppReporteRoute: AppAppReporteRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
@@ -328,11 +452,13 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
+  AyudaRoute: AyudaRoute,
   DemoRoute: DemoRoute,
   LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRoute,
   PreciosRoute: PreciosRoute,
   RegistroRoute: RegistroRoute,
+  StatusRoute: StatusRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

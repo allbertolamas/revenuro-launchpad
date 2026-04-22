@@ -11,37 +11,30 @@ import {
   Bell,
   LogOut,
   Settings2,
+  HelpCircle,
+  Sparkles,
+  FileBarChart2,
+  Plug,
 } from "lucide-react";
 import brerevLogo from "@/assets/brerev-logo.png";
+import {
+  loadOnboarding,
+  completedCount,
+  shouldShowWelcomeInSidebar,
+  STEP_KEYS,
+  type OnboardingState,
+} from "@/lib/mock-onboarding";
+import { getMockNotifications, loadReadIds } from "@/lib/mock-notifications";
 
 type Period = "today" | "7d" | "30d" | "90d";
 
-type NavItem = { label: string; to: string; icon: typeof LayoutDashboard; badge?: number };
-
-const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
-  {
-    label: "Visión general",
-    items: [
-      { label: "Dashboard", to: "/app/dashboard", icon: LayoutDashboard },
-      { label: "Leads", to: "/app/leads", icon: Users, badge: 4 },
-    ],
-  },
-  {
-    label: "Operaciones",
-    items: [
-      { label: "Conversaciones", to: "/app/conversaciones", icon: MessageSquare },
-      { label: "Citas", to: "/app/citas", icon: Calendar },
-    ],
-  },
-  {
-    label: "Configuración",
-    items: [
-      { label: "Mensajes", to: "/app/mensajes", icon: Edit3 },
-      { label: "Configuración", to: "/app/configuracion", icon: Settings },
-      { label: "Facturación", to: "/app/facturacion", icon: CreditCard },
-    ],
-  },
-];
+type NavItem = {
+  label: string;
+  to: string;
+  icon: typeof LayoutDashboard;
+  badge?: number;
+  ring?: { value: number; max: number };
+};
 
 const PAGE_TITLES: Record<string, string> = {
   "/app/dashboard": "Dashboard",
@@ -51,6 +44,11 @@ const PAGE_TITLES: Record<string, string> = {
   "/app/mensajes": "Mensajes del sistema",
   "/app/configuracion": "Configuración",
   "/app/facturacion": "Facturación",
+  "/app/bienvenida": "Primeros pasos",
+  "/app/notificaciones": "Notificaciones",
+  "/app/reporte": "Reportes",
+  "/app/integraciones": "Integraciones",
+  "/ayuda": "Centro de ayuda",
 };
 
 export type PeriodContext = { period: Period; setPeriod: (p: Period) => void };
@@ -66,8 +64,10 @@ export function AppShell() {
   const navigate = useNavigate();
   const router = useRouter();
   const [period, setPeriod] = useState<Period>("7d");
+  const [onboarding, setOnboarding] = useState<OnboardingState | null>(null);
+  const [unreadCount, setUnreadCount] = useState(0);
 
-  // Guard simulado: si no hay flag, redirige a /login
+  // Guard simulado
   useEffect(() => {
     if (typeof window === "undefined") return;
     const flag = window.localStorage.getItem("brerev_logged_in");
@@ -76,36 +76,118 @@ export function AppShell() {
     }
   }, [navigate]);
 
+  // Cargar estado dinámico (onboarding + unread)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    setOnboarding(loadOnboarding());
+    const read = loadReadIds();
+    const all = getMockNotifications();
+    setUnreadCount(all.filter((n) => !read.has(n.id)).length);
+
+    const onStorage = () => {
+      setOnboarding(loadOnboarding());
+      const r = loadReadIds();
+      setUnreadCount(getMockNotifications().filter((n) => !r.has(n.id)).length);
+    };
+    window.addEventListener("storage", onStorage);
+    window.addEventListener("brerev:state-change", onStorage);
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("brerev:state-change", onStorage);
+    };
+  }, []);
+
   const handleLogout = () => {
     window.localStorage.removeItem("brerev_logged_in");
     router.invalidate();
     navigate({ to: "/login" });
   };
 
+  const showWelcome = onboarding ? shouldShowWelcomeInSidebar(onboarding) : false;
+  const welcomeProgress = onboarding ? completedCount(onboarding) : 0;
+
   return (
     <PeriodCtx.Provider value={{ period, setPeriod }}>
       <div className="min-h-screen" style={{ background: "var(--midnight)" }}>
-        {/* SIDEBAR DESKTOP */}
-        <Sidebar onLogout={handleLogout} />
+        <Sidebar
+          onLogout={handleLogout}
+          showWelcome={showWelcome}
+          welcomeProgress={welcomeProgress}
+          welcomeMax={STEP_KEYS.length}
+          unreadCount={unreadCount}
+        />
 
-        {/* CONTENIDO */}
         <div className="lg:pl-[240px]">
-          <TopBar period={period} setPeriod={setPeriod} />
+          <TopBar period={period} setPeriod={setPeriod} unreadCount={unreadCount} />
           <main className="px-5 pb-24 pt-6 sm:px-8 lg:pb-12">
             <Outlet />
           </main>
         </div>
 
-        {/* MOBILE BOTTOM NAV */}
         <MobileNav />
       </div>
     </PeriodCtx.Provider>
   );
 }
 
-function Sidebar({ onLogout }: { onLogout: () => void }) {
+function Sidebar({
+  onLogout,
+  showWelcome,
+  welcomeProgress,
+  welcomeMax,
+  unreadCount,
+}: {
+  onLogout: () => void;
+  showWelcome: boolean;
+  welcomeProgress: number;
+  welcomeMax: number;
+  unreadCount: number;
+}) {
   const location = useLocation();
   const path = location.pathname;
+
+  const navGroups: { label: string; items: NavItem[] }[] = [
+    {
+      label: "Visión general",
+      items: [
+        ...(showWelcome
+          ? [
+              {
+                label: "Bienvenida",
+                to: "/app/bienvenida",
+                icon: Sparkles,
+                ring: { value: welcomeProgress, max: welcomeMax },
+              } as NavItem,
+            ]
+          : []),
+        { label: "Dashboard", to: "/app/dashboard", icon: LayoutDashboard },
+        { label: "Leads", to: "/app/leads", icon: Users, badge: 4 },
+        { label: "Reporte", to: "/app/reporte", icon: FileBarChart2 },
+      ],
+    },
+    {
+      label: "Operaciones",
+      items: [
+        { label: "Conversaciones", to: "/app/conversaciones", icon: MessageSquare },
+        { label: "Citas", to: "/app/citas", icon: Calendar },
+        {
+          label: "Notificaciones",
+          to: "/app/notificaciones",
+          icon: Bell,
+          badge: unreadCount > 0 ? unreadCount : undefined,
+        },
+      ],
+    },
+    {
+      label: "Configuración",
+      items: [
+        { label: "Mensajes", to: "/app/mensajes", icon: Edit3 },
+        { label: "Integraciones", to: "/app/integraciones", icon: Plug },
+        { label: "Configuración", to: "/app/configuracion", icon: Settings },
+        { label: "Facturación", to: "/app/facturacion", icon: CreditCard },
+      ],
+    },
+  ];
 
   return (
     <aside
@@ -115,7 +197,6 @@ function Sidebar({ onLogout }: { onLogout: () => void }) {
         borderRight: "1px solid var(--steel)",
       }}
     >
-      {/* Header */}
       <div className="px-5 pb-4 pt-5" style={{ borderBottom: "1px solid var(--steel)" }}>
         <Link to="/app/dashboard" className="flex items-center gap-2">
           <img
@@ -142,9 +223,8 @@ function Sidebar({ onLogout }: { onLogout: () => void }) {
         </div>
       </div>
 
-      {/* Nav */}
       <nav className="flex-1 overflow-y-auto p-3">
-        {NAV_GROUPS.map((group) => (
+        {navGroups.map((group) => (
           <div key={group.label} className="mb-2">
             <p
               className="px-2 pb-1.5 pt-4 text-[10px] font-semibold uppercase"
@@ -152,51 +232,21 @@ function Sidebar({ onLogout }: { onLogout: () => void }) {
             >
               {group.label}
             </p>
-            {group.items.map((item) => {
-              const active = path === item.to;
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  className="group mb-0.5 flex items-center gap-2.5 rounded-[10px] px-3 py-2.5 text-[14px] transition-all"
-                  style={{
-                    color: active ? "var(--platinum)" : "var(--slate)",
-                    background: active ? "rgba(30,95,255,0.12)" : "transparent",
-                    borderLeft: active ? "2px solid var(--electric)" : "2px solid transparent",
-                    fontWeight: active ? 500 : 400,
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!active) {
-                      e.currentTarget.style.background = "rgba(255,255,255,0.04)";
-                      e.currentTarget.style.color = "var(--platinum)";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!active) {
-                      e.currentTarget.style.background = "transparent";
-                      e.currentTarget.style.color = "var(--slate)";
-                    }
-                  }}
-                >
-                  <Icon size={18} />
-                  <span className="flex-1">{item.label}</span>
-                  {item.badge ? (
-                    <span
-                      className="rounded-full px-1.5 py-0.5 text-[10px] font-bold tabular text-white"
-                      style={{ background: "var(--electric)" }}
-                    >
-                      {item.badge}
-                    </span>
-                  ) : null}
-                </Link>
-              );
-            })}
+            {group.items.map((item) => (
+              <SidebarItem key={item.to} item={item} active={path === item.to} />
+            ))}
           </div>
         ))}
+
+        {/* Ayuda al fondo */}
+        <div className="mt-4 pt-2" style={{ borderTop: "1px solid var(--steel)" }}>
+          <SidebarItem
+            item={{ label: "Ayuda", to: "/ayuda", icon: HelpCircle }}
+            active={path === "/ayuda"}
+          />
+        </div>
       </nav>
 
-      {/* Footer */}
       <div className="p-3" style={{ borderTop: "1px solid var(--steel)" }}>
         <div className="flex items-center gap-2.5 rounded-[10px] px-2 py-2">
           <div
@@ -227,16 +277,107 @@ function Sidebar({ onLogout }: { onLogout: () => void }) {
   );
 }
 
+function SidebarItem({ item, active }: { item: NavItem; active: boolean }) {
+  const Icon = item.icon;
+  return (
+    <Link
+      to={item.to}
+      className="group mb-0.5 flex items-center gap-2.5 rounded-[10px] px-3 py-2.5 text-[14px] transition-all"
+      style={{
+        color: active ? "var(--platinum)" : "var(--slate)",
+        background: active ? "rgba(30,95,255,0.12)" : "transparent",
+        borderLeft: active ? "2px solid var(--electric)" : "2px solid transparent",
+        fontWeight: active ? 500 : 400,
+      }}
+      onMouseEnter={(e) => {
+        if (!active) {
+          e.currentTarget.style.background = "rgba(255,255,255,0.04)";
+          e.currentTarget.style.color = "var(--platinum)";
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!active) {
+          e.currentTarget.style.background = "transparent";
+          e.currentTarget.style.color = "var(--slate)";
+        }
+      }}
+    >
+      {item.ring ? (
+        <ProgressRing value={item.ring.value} max={item.ring.max} />
+      ) : (
+        <Icon size={18} />
+      )}
+      <span className="flex-1">{item.label}</span>
+      {item.badge ? (
+        <span
+          className="rounded-full px-1.5 py-0.5 text-[10px] font-bold tabular text-white"
+          style={{ background: "var(--electric)" }}
+        >
+          {item.badge}
+        </span>
+      ) : null}
+    </Link>
+  );
+}
+
+function ProgressRing({ value, max }: { value: number; max: number }) {
+  const size = 18;
+  const stroke = 2;
+  const r = (size - stroke) / 2;
+  const c = 2 * Math.PI * r;
+  const pct = Math.min(1, value / max);
+  const offset = c * (1 - pct);
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={r}
+        fill="none"
+        stroke="var(--steel)"
+        strokeWidth={stroke}
+      />
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={r}
+        fill="none"
+        stroke="var(--electric)"
+        strokeWidth={stroke}
+        strokeDasharray={c}
+        strokeDashoffset={offset}
+        strokeLinecap="round"
+        transform={`rotate(-90 ${size / 2} ${size / 2})`}
+        style={{ transition: "stroke-dashoffset 0.6s ease" }}
+      />
+      <text
+        x="50%"
+        y="50%"
+        dominantBaseline="central"
+        textAnchor="middle"
+        fontSize="7"
+        fontWeight="700"
+        fill="var(--platinum)"
+        fontFamily="Inter, sans-serif"
+      >
+        {value}
+      </text>
+    </svg>
+  );
+}
+
 function TopBar({
   period,
   setPeriod,
+  unreadCount,
 }: {
   period: Period;
   setPeriod: (p: Period) => void;
+  unreadCount: number;
 }) {
   const location = useLocation();
   const title = PAGE_TITLES[location.pathname] ?? "Brerev";
-  const [notifOpen, setNotifOpen] = useState(false);
+  const navigate = useNavigate();
 
   const periods: { id: Period; label: string }[] = [
     { id: "today", label: "Hoy" },
@@ -259,7 +400,6 @@ function TopBar({
       </h1>
 
       <div className="flex items-center gap-2 sm:gap-3">
-        {/* Period selector — visible solo en dashboard / leads / conversaciones */}
         <div
           className="hidden items-center gap-1 rounded-full p-1 sm:flex"
           style={{ background: "var(--steel)" }}
@@ -279,70 +419,23 @@ function TopBar({
           ))}
         </div>
 
-        {/* Notifications */}
-        <div className="relative">
-          <button
-            onClick={() => setNotifOpen(!notifOpen)}
-            className="relative flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-white/5"
-            style={{ color: "var(--slate-light)" }}
-            aria-label="Notificaciones"
-          >
-            <Bell size={18} />
+        <button
+          onClick={() => navigate({ to: "/app/notificaciones" })}
+          className="relative flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-white/5"
+          style={{ color: "var(--slate-light)" }}
+          aria-label="Notificaciones"
+        >
+          <Bell size={18} />
+          {unreadCount > 0 && (
             <span
-              className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-bold text-white"
+              className="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[9px] font-bold text-white"
               style={{ background: "var(--red-loss)" }}
             >
-              3
+              {unreadCount}
             </span>
-          </button>
-          {notifOpen && (
-            <>
-              <div
-                className="fixed inset-0 z-40"
-                onClick={() => setNotifOpen(false)}
-              />
-              <div
-                className="absolute right-0 top-11 z-50 w-[320px] overflow-hidden rounded-[14px] shadow-2xl"
-                style={{
-                  background: "var(--card-bg)",
-                  border: "1px solid var(--border-subtle)",
-                  backdropFilter: "blur(12px)",
-                }}
-              >
-                <div className="p-3" style={{ borderBottom: "1px solid var(--steel)" }}>
-                  <p className="text-[13px] font-semibold" style={{ color: "var(--platinum)" }}>
-                    Notificaciones recientes
-                  </p>
-                </div>
-                <ul className="max-h-[320px] overflow-y-auto">
-                  {[
-                    { t: "🔥 Lead caliente", d: "Mariana López — Polanco $4M", a: "hace 2 min" },
-                    { t: "Cita confirmada", d: "Patricia Ortiz — hoy 5:00 PM", a: "hace 18 min" },
-                    { t: "Nuevo lead", d: "Andrés Vega — Casa Coyoacán", a: "hace 41 min" },
-                  ].map((n, i) => (
-                    <li
-                      key={i}
-                      className="cursor-pointer p-3 transition-colors hover:bg-white/5"
-                      style={{ borderBottom: i < 2 ? "1px solid var(--steel)" : undefined }}
-                    >
-                      <p className="text-[13px] font-medium" style={{ color: "var(--platinum)" }}>
-                        {n.t}
-                      </p>
-                      <p className="mt-0.5 text-[12px]" style={{ color: "var(--slate)" }}>
-                        {n.d}
-                      </p>
-                      <p className="mt-1 text-[11px]" style={{ color: "var(--slate)", opacity: 0.7 }}>
-                        {n.a}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </>
           )}
-        </div>
+        </button>
 
-        {/* Avatar */}
         <button
           className="flex h-9 w-9 items-center justify-center rounded-full text-[12px] font-bold text-white transition-transform hover:scale-105"
           style={{ background: "linear-gradient(135deg, var(--electric), #2d6fff)" }}
@@ -394,9 +487,7 @@ function MobileNav() {
   );
 }
 
-// Re-export types
 export type { Period };
-// helper for skeleton screens used by sub-pages
 export function SkeletonBlock({ className, style }: { className?: string; style?: React.CSSProperties }) {
   return (
     <div
@@ -413,5 +504,4 @@ export function SkeletonBlock({ className, style }: { className?: string; style?
   );
 }
 
-// silence unused warning if ReactNode imported but not used
 type _unused = ReactNode;
