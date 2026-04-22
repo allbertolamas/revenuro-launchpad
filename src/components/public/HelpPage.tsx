@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { PublicShell } from "@/components/PublicShell";
-import { AppShell } from "@/components/app/AppShell";
 
 const CATEGORIES = [
   {
@@ -78,35 +77,11 @@ const MOCK_RESULTS = [
 ];
 
 export function HelpPage() {
-  const [isAuth, setIsAuth] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    if (typeof window !== "undefined") {
-      setIsAuth(window.localStorage.getItem("brerev_logged_in") === "true");
-    }
-  }, []);
-
-  const content = <HelpContent />;
-
-  if (!mounted) {
-    return <div style={{ background: "var(--midnight)", minHeight: "100vh" }} />;
-  }
-
-  // En modo autenticado renderizamos el contenido sin AppShell ya que esta ruta
-  // es pública (no vive bajo /_app). El usuario ve el sidebar solo si navega
-  // desde el dashboard. Para simplicidad, mostramos siempre el shell público.
-  return <PublicShell>{content}</PublicShell>;
-
-  // Nota: si quisiéramos detectar al usuario logueado y mostrar AppShell aquí,
-  // tendríamos que extraer Help del routeTree público — para evitar duplicar
-  // la ruta, mantenemos la consistencia con el shell público.
-  // (referencia tácita para evitar warning de import sin uso)
-  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-  AppShell;
-  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-  isAuth;
+  return (
+    <PublicShell>
+      <HelpContent />
+    </PublicShell>
+  );
 }
 
 function HelpContent() {
