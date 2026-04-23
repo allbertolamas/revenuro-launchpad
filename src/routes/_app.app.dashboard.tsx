@@ -95,7 +95,7 @@ function DashboardPage() {
       </div>
 
       {/* FILA 1 — KPIs */}
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <section data-tour="kpis" className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <KpiCard
           label="Leads recibidos"
           value={kpis.leads.value}
@@ -230,7 +230,7 @@ function DashboardPage() {
           </Card>
         </div>
 
-        <div className="lg:col-span-5">
+        <div data-tour="feed" className="lg:col-span-5">
           <Card className="flex flex-col">
             <header
               className="flex items-center justify-between px-5 py-4"

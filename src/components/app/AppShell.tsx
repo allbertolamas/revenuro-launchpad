@@ -25,6 +25,11 @@ import {
   type OnboardingState,
 } from "@/lib/mock-onboarding";
 import { getMockNotifications, loadReadIds } from "@/lib/mock-notifications";
+import { CommandPalette, CommandTrigger } from "./CommandPalette";
+import { GuidedTour } from "./GuidedTour";
+import { UpdateBanner } from "./UpdateBanner";
+import { LoadingScreen } from "./LoadingScreen";
+import { FeedbackWidget } from "./FeedbackWidget";
 
 type Period = "today" | "7d" | "30d" | "90d";
 
@@ -66,6 +71,7 @@ export function AppShell() {
   const [period, setPeriod] = useState<Period>("7d");
   const [onboarding, setOnboarding] = useState<OnboardingState | null>(null);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [cmdOpen, setCmdOpen] = useState(false);
 
   // Guard simulado
   useEffect(() => {
@@ -97,6 +103,19 @@ export function AppShell() {
     };
   }, []);
 
+  // Atajo ⌘K / Ctrl+K
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setCmdOpen((v) => !v);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   const handleLogout = () => {
     window.localStorage.removeItem("brerev_logged_in");
     router.invalidate();
@@ -118,13 +137,23 @@ export function AppShell() {
         />
 
         <div className="lg:pl-[240px]">
-          <TopBar period={period} setPeriod={setPeriod} unreadCount={unreadCount} />
+          <TopBar
+            period={period}
+            setPeriod={setPeriod}
+            unreadCount={unreadCount}
+            onCmdOpen={() => setCmdOpen(true)}
+          />
+          <UpdateBanner />
           <main className="px-5 pb-24 pt-6 sm:px-8 lg:pb-12">
             <Outlet />
           </main>
         </div>
 
-        <MobileNav />
+        <MobileNav onCmdOpen={() => setCmdOpen(true)} />
+        <CommandPalette open={cmdOpen} onOpenChange={setCmdOpen} />
+        <GuidedTour />
+        <FeedbackWidget />
+        <LoadingScreen minMs={500} />
       </div>
     </PeriodCtx.Provider>
   );
@@ -279,9 +308,20 @@ function Sidebar({
 
 function SidebarItem({ item, active }: { item: NavItem; active: boolean }) {
   const Icon = item.icon;
+  const tourKey =
+    item.to === "/app/leads"
+      ? "leads"
+      : item.to === "/app/mensajes"
+      ? "mensajes"
+      : item.to === "/app/configuracion"
+      ? "configuracion"
+      : item.to === "/ayuda"
+      ? "ayuda"
+      : undefined;
   return (
     <Link
       to={item.to}
+      data-tour={tourKey}
       className="group mb-0.5 flex items-center gap-2.5 rounded-[10px] px-3 py-2.5 text-[14px] transition-all"
       style={{
         color: active ? "var(--platinum)" : "var(--slate)",
@@ -370,10 +410,12 @@ function TopBar({
   period,
   setPeriod,
   unreadCount,
+  onCmdOpen,
 }: {
   period: Period;
   setPeriod: (p: Period) => void;
   unreadCount: number;
+  onCmdOpen: () => void;
 }) {
   const location = useLocation();
   const title = PAGE_TITLES[location.pathname] ?? "Brerev";
@@ -400,6 +442,7 @@ function TopBar({
       </h1>
 
       <div className="flex items-center gap-2 sm:gap-3">
+        <CommandTrigger onClick={onCmdOpen} />
         <div
           className="hidden items-center gap-1 rounded-full p-1 sm:flex"
           style={{ background: "var(--steel)" }}
@@ -448,7 +491,7 @@ function TopBar({
   );
 }
 
-function MobileNav() {
+function MobileNav({ onCmdOpen }: { onCmdOpen: () => void }) {
   const location = useLocation();
   const path = location.pathname;
   const items: NavItem[] = [
@@ -460,30 +503,53 @@ function MobileNav() {
   ];
 
   return (
-    <nav
-      className="fixed bottom-0 left-0 right-0 z-40 flex h-[60px] items-center justify-around lg:hidden"
-      style={{
-        background: "rgba(8,14,29,0.98)",
-        borderTop: "1px solid var(--steel)",
-        backdropFilter: "blur(12px)",
-      }}
-    >
-      {items.map((item) => {
-        const active = path === item.to;
-        const Icon = item.icon;
-        return (
-          <Link
-            key={item.to}
-            to={item.to}
-            className="flex flex-1 flex-col items-center gap-0.5 py-2"
-            style={{ color: active ? "var(--electric)" : "var(--slate)" }}
-          >
-            <Icon size={22} />
-            <span className="text-[10px] font-medium">{item.label}</span>
-          </Link>
-        );
-      })}
-    </nav>
+    <>
+      <nav
+        className="fixed bottom-0 left-0 right-0 z-40 flex h-[60px] items-center justify-around lg:hidden"
+        style={{
+          background: "rgba(8,14,29,0.98)",
+          borderTop: "1px solid var(--steel)",
+          backdropFilter: "blur(12px)",
+        }}
+      >
+        {items.map((item) => {
+          const active = path === item.to;
+          const Icon = item.icon;
+          return (
+            <Link
+              key={item.to}
+              to={item.to}
+              className="flex flex-1 flex-col items-center gap-0.5 py-2"
+              style={{ color: active ? "var(--electric)" : "var(--slate)" }}
+            >
+              <Icon size={22} />
+              <span className="text-[10px] font-medium">{item.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+      {/* Botón flotante de búsqueda en móvil (sustituto de ⌘K) */}
+      <button
+        onClick={onCmdOpen}
+        className="fixed bottom-[76px] right-4 z-40 flex h-12 w-12 items-center justify-center rounded-full text-white shadow-lg lg:hidden"
+        style={{
+          background: "var(--electric)",
+          boxShadow: "0 8px 24px rgba(30,95,255,0.4)",
+        }}
+        aria-label="Buscar"
+      >
+        <SearchIcon />
+      </button>
+    </>
+  );
+}
+
+function SearchIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="7" />
+      <path d="m20 20-3.5-3.5" />
+    </svg>
   );
 }
 
