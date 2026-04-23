@@ -308,9 +308,20 @@ function Sidebar({
 
 function SidebarItem({ item, active }: { item: NavItem; active: boolean }) {
   const Icon = item.icon;
+  const tourKey =
+    item.to === "/app/leads"
+      ? "leads"
+      : item.to === "/app/mensajes"
+      ? "mensajes"
+      : item.to === "/app/configuracion"
+      ? "configuracion"
+      : item.to === "/ayuda"
+      ? "ayuda"
+      : undefined;
   return (
     <Link
       to={item.to}
+      data-tour={tourKey}
       className="group mb-0.5 flex items-center gap-2.5 rounded-[10px] px-3 py-2.5 text-[14px] transition-all"
       style={{
         color: active ? "var(--platinum)" : "var(--slate)",
