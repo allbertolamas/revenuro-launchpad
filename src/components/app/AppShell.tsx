@@ -399,10 +399,12 @@ function TopBar({
   period,
   setPeriod,
   unreadCount,
+  onCmdOpen,
 }: {
   period: Period;
   setPeriod: (p: Period) => void;
   unreadCount: number;
+  onCmdOpen: () => void;
 }) {
   const location = useLocation();
   const title = PAGE_TITLES[location.pathname] ?? "Brerev";
@@ -429,6 +431,7 @@ function TopBar({
       </h1>
 
       <div className="flex items-center gap-2 sm:gap-3">
+        <CommandTrigger onClick={onCmdOpen} />
         <div
           className="hidden items-center gap-1 rounded-full p-1 sm:flex"
           style={{ background: "var(--steel)" }}
@@ -477,7 +480,7 @@ function TopBar({
   );
 }
 
-function MobileNav() {
+function MobileNav({ onCmdOpen }: { onCmdOpen: () => void }) {
   const location = useLocation();
   const path = location.pathname;
   const items: NavItem[] = [
@@ -489,30 +492,53 @@ function MobileNav() {
   ];
 
   return (
-    <nav
-      className="fixed bottom-0 left-0 right-0 z-40 flex h-[60px] items-center justify-around lg:hidden"
-      style={{
-        background: "rgba(8,14,29,0.98)",
-        borderTop: "1px solid var(--steel)",
-        backdropFilter: "blur(12px)",
-      }}
-    >
-      {items.map((item) => {
-        const active = path === item.to;
-        const Icon = item.icon;
-        return (
-          <Link
-            key={item.to}
-            to={item.to}
-            className="flex flex-1 flex-col items-center gap-0.5 py-2"
-            style={{ color: active ? "var(--electric)" : "var(--slate)" }}
-          >
-            <Icon size={22} />
-            <span className="text-[10px] font-medium">{item.label}</span>
-          </Link>
-        );
-      })}
-    </nav>
+    <>
+      <nav
+        className="fixed bottom-0 left-0 right-0 z-40 flex h-[60px] items-center justify-around lg:hidden"
+        style={{
+          background: "rgba(8,14,29,0.98)",
+          borderTop: "1px solid var(--steel)",
+          backdropFilter: "blur(12px)",
+        }}
+      >
+        {items.map((item) => {
+          const active = path === item.to;
+          const Icon = item.icon;
+          return (
+            <Link
+              key={item.to}
+              to={item.to}
+              className="flex flex-1 flex-col items-center gap-0.5 py-2"
+              style={{ color: active ? "var(--electric)" : "var(--slate)" }}
+            >
+              <Icon size={22} />
+              <span className="text-[10px] font-medium">{item.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+      {/* Botón flotante de búsqueda en móvil (sustituto de ⌘K) */}
+      <button
+        onClick={onCmdOpen}
+        className="fixed bottom-[76px] right-4 z-40 flex h-12 w-12 items-center justify-center rounded-full text-white shadow-lg lg:hidden"
+        style={{
+          background: "var(--electric)",
+          boxShadow: "0 8px 24px rgba(30,95,255,0.4)",
+        }}
+        aria-label="Buscar"
+      >
+        <SearchIcon />
+      </button>
+    </>
+  );
+}
+
+function SearchIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="7" />
+      <path d="m20 20-3.5-3.5" />
+    </svg>
   );
 }
 
