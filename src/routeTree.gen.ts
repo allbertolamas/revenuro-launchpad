@@ -29,6 +29,7 @@ import { Route as AppAppConversacionesRouteImport } from './routes/_app.app.conv
 import { Route as AppAppConfiguracionRouteImport } from './routes/_app.app.configuracion'
 import { Route as AppAppCitasRouteImport } from './routes/_app.app.citas'
 import { Route as AppAppBienvenidaRouteImport } from './routes/_app.app.bienvenida'
+import { Route as AppAppDevEmailsRouteImport } from './routes/_app.app.dev.emails'
 
 const StatusRoute = StatusRouteImport.update({
   id: '/status',
@@ -129,6 +130,11 @@ const AppAppBienvenidaRoute = AppAppBienvenidaRouteImport.update({
   path: '/app/bienvenida',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAppDevEmailsRoute = AppAppDevEmailsRouteImport.update({
+  id: '/app/dev/emails',
+  path: '/app/dev/emails',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -150,6 +156,7 @@ export interface FileRoutesByFullPath {
   '/app/mensajes': typeof AppAppMensajesRoute
   '/app/notificaciones': typeof AppAppNotificacionesRoute
   '/app/reporte': typeof AppAppReporteRoute
+  '/app/dev/emails': typeof AppAppDevEmailsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -171,6 +178,7 @@ export interface FileRoutesByTo {
   '/app/mensajes': typeof AppAppMensajesRoute
   '/app/notificaciones': typeof AppAppNotificacionesRoute
   '/app/reporte': typeof AppAppReporteRoute
+  '/app/dev/emails': typeof AppAppDevEmailsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -194,6 +202,7 @@ export interface FileRoutesById {
   '/_app/app/mensajes': typeof AppAppMensajesRoute
   '/_app/app/notificaciones': typeof AppAppNotificacionesRoute
   '/_app/app/reporte': typeof AppAppReporteRoute
+  '/_app/app/dev/emails': typeof AppAppDevEmailsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -217,6 +226,7 @@ export interface FileRouteTypes {
     | '/app/mensajes'
     | '/app/notificaciones'
     | '/app/reporte'
+    | '/app/dev/emails'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -238,6 +248,7 @@ export interface FileRouteTypes {
     | '/app/mensajes'
     | '/app/notificaciones'
     | '/app/reporte'
+    | '/app/dev/emails'
   id:
     | '__root__'
     | '/'
@@ -260,6 +271,7 @@ export interface FileRouteTypes {
     | '/_app/app/mensajes'
     | '/_app/app/notificaciones'
     | '/_app/app/reporte'
+    | '/_app/app/dev/emails'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -416,6 +428,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAppBienvenidaRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/app/dev/emails': {
+      id: '/_app/app/dev/emails'
+      path: '/app/dev/emails'
+      fullPath: '/app/dev/emails'
+      preLoaderRoute: typeof AppAppDevEmailsRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
@@ -431,6 +450,7 @@ interface AppRouteChildren {
   AppAppMensajesRoute: typeof AppAppMensajesRoute
   AppAppNotificacionesRoute: typeof AppAppNotificacionesRoute
   AppAppReporteRoute: typeof AppAppReporteRoute
+  AppAppDevEmailsRoute: typeof AppAppDevEmailsRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -445,6 +465,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppAppMensajesRoute: AppAppMensajesRoute,
   AppAppNotificacionesRoute: AppAppNotificacionesRoute,
   AppAppReporteRoute: AppAppReporteRoute,
+  AppAppDevEmailsRoute: AppAppDevEmailsRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
@@ -463,3 +484,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
