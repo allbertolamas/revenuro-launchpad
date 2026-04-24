@@ -1,5 +1,6 @@
-import { useRef, useState } from "react";
-import { Play, Pause } from "lucide-react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Play, Pause, Lock } from "lucide-react";
 import { Field } from "./Field";
 import { VOICES, type WizardData } from "./types";
 
@@ -28,25 +29,25 @@ export function Step3Assistant({
   data: WizardData;
   update: (patch: Partial<WizardData>) => void;
 }) {
+  // Preview real con ElevenLabs aún no disponible en este turno —
+  // la UI está completa, el botón quedará habilitado al activar el sistema.
   const [playing, setPlaying] = useState<string | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const togglePlay = (id: string) => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current = null;
-    }
+    // Animación "decorativa": las barras del preview reaccionan ~3s
     if (playing === id) {
       setPlaying(null);
       return;
     }
-    const audio = new Audio(`/audio/voices/${id}.mp3`);
-    audio.onended = () => setPlaying(null);
-    audio.onerror = () => setPlaying(null);
-    audio.play().catch(() => setPlaying(null));
-    audioRef.current = audio;
     setPlaying(id);
+    setTimeout(() => setPlaying((p) => (p === id ? null : p)), 3000);
   };
+
+  const selectedVoice = VOICES.find((v) => v.id === data.voiceId);
+  const showPreview =
+    !!data.assistantName.trim() &&
+    !!data.businessName.trim() &&
+    !!data.voiceId;
 
   return (
     <div className="space-y-8">
@@ -54,8 +55,8 @@ export function Step3Assistant({
       <div>
         <Field
           label="Nombre del asistente"
-          placeholder="Ej: Sofía, Carlos, Asistente Torres"
-          helper="Tus leads lo conocerán con este nombre."
+          placeholder="Ej: Sofía, Asistente Torres, Equipo [tu negocio]"
+          helper="Puede ser un nombre real o uno neutral. Tus leads lo conocerán con este nombre."
           value={data.assistantName}
           onChange={(e) => update({ assistantName: e.target.value })}
         />
@@ -128,6 +129,7 @@ export function Step3Assistant({
                     background: "rgba(30,95,255,0.08)",
                     color: "var(--electric)",
                   }}
+                  title="Disponible al activar tu sistema"
                 >
                   {playing === v.id ? (
                     <>
@@ -143,6 +145,95 @@ export function Step3Assistant({
             );
           })}
         </div>
+
+        {/* Preview en contexto real */}
+        <AnimatePresence>
+          {showPreview && selectedVoice && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              transition={{ duration: 0.25 }}
+              className="mt-5 rounded-[12px] p-5"
+              style={{
+                background: "rgba(30,95,255,0.06)",
+                border: "1px solid rgba(30,95,255,0.2)",
+              }}
+            >
+              <div className="flex items-center gap-4">
+                {/* Wave bars */}
+                <div
+                  className="flex flex-shrink-0 items-end gap-1"
+                  style={{ width: 32, height: 32 }}
+                >
+                  {[0, 1, 2].map((i) => {
+                    const isPlaying = playing === data.voiceId;
+                    return (
+                      <span
+                        key={i}
+                        style={{
+                          width: 4,
+                          height: isPlaying ? "100%" : "30%",
+                          background: isPlaying
+                            ? "var(--electric)"
+                            : "var(--steel-light)",
+                          borderRadius: 2,
+                          animation: isPlaying
+                            ? `brerev-wave 0.9s ease-in-out ${i * 0.15}s infinite`
+                            : "none",
+                          transformOrigin: "center bottom",
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+
+                <div className="min-w-0 flex-1">
+                  <p
+                    className="text-[14px] sm:text-[15px] italic"
+                    style={{ color: "var(--platinum)" }}
+                  >
+                    "Hola, soy {data.assistantName}, asistente de{" "}
+                    {data.businessName}. ¿En qué puedo ayudarte hoy?"
+                  </p>
+                  <p
+                    className="mt-1.5 flex items-center gap-1.5 text-[12px]"
+                    style={{ color: "var(--slate)" }}
+                  >
+                    <Lock size={11} />
+                    Disponible al activar — preview con voz {selectedVoice.name}
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => togglePlay(data.voiceId)}
+                  aria-label={playing === data.voiceId ? "Pausar" : "Reproducir"}
+                  className="flex flex-shrink-0 items-center justify-center rounded-full transition-colors"
+                  style={{
+                    width: 40,
+                    height: 40,
+                    background: "rgba(30,95,255,0.15)",
+                    color: "var(--electric)",
+                  }}
+                >
+                  {playing === data.voiceId ? (
+                    <Pause size={16} />
+                  ) : (
+                    <Play size={16} style={{ marginLeft: 2 }} />
+                  )}
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <style>{`
+          @keyframes brerev-wave {
+            0%, 100% { transform: scaleY(0.3); }
+            50% { transform: scaleY(1); }
+          }
+        `}</style>
       </div>
 
       {/* Tono */}
