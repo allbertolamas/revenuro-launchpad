@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, RefreshCw, Check, RotateCcw } from "lucide-react";
 import { WizardHeader } from "@/components/onboarding/WizardHeader";
 import { Step1Business } from "@/components/onboarding/Step1Business";
 import { Step2Channel } from "@/components/onboarding/Step2Channel";
@@ -11,6 +11,12 @@ import { Step5Messages } from "@/components/onboarding/Step5Messages";
 import { Step6Test } from "@/components/onboarding/Step6Test";
 import { Step7Activate } from "@/components/onboarding/Step7Activate";
 import { INITIAL_DATA, type WizardData } from "@/components/onboarding/types";
+import {
+  loadDraft,
+  clearDraft,
+  useAutoSave,
+  formatSavedAt,
+} from "@/lib/wizard-autosave";
 
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
@@ -32,34 +38,28 @@ function OnboardingPage() {
   const [step, setStep] = useState(1);
   const [data, setData] = useState<WizardData>(INITIAL_DATA);
   const [hydrated, setHydrated] = useState(false);
+  const [resumeBanner, setResumeBanner] = useState<{
+    step: number;
+    data: WizardData;
+    lastSavedAt: number;
+  } | null>(null);
 
   // Hydrate from localStorage on mount (client-only)
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (parsed.data) setData({ ...INITIAL_DATA, ...parsed.data });
-        if (parsed.step && typeof parsed.step === "number") {
-          // Cap the resumed step at 6 — never resume directly into activation
-          setStep(Math.min(parsed.step, 6));
-        }
-      }
-    } catch {
-      /* ignore */
+    const draft = loadDraft<WizardData>();
+    if (draft && draft.lastSavedAt) {
+      // Mostrar banner de recuperación; aún no aplicamos los datos.
+      setResumeBanner({
+        step: Math.min(draft.step ?? 1, 6),
+        data: { ...INITIAL_DATA, ...draft.data },
+        lastSavedAt: draft.lastSavedAt,
+      });
     }
     setHydrated(true);
   }, []);
 
-  // Persist on change
-  useEffect(() => {
-    if (!hydrated) return;
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ step, data }));
-    } catch {
-      /* ignore */
-    }
-  }, [step, data, hydrated]);
+  // Auto-guardado debounced
+  const { status: saveStatus } = useAutoSave(step, data, hydrated);
 
   const update = (patch: Partial<WizardData>) =>
     setData((d) => ({ ...d, ...patch }));
