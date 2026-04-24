@@ -4,7 +4,7 @@ import { Menu, X } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import brerevLogo from "@/assets/brerev-logo.png";
 
-export function Navbar() {
+export function Navbar({ topOffset = 0 }: { topOffset?: number }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -15,6 +15,9 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Cuando hace scroll, el navbar se "despega" del topbar y se queda en top:0.
+  const headerTop = scrolled ? 0 : topOffset;
+
   const navLinks = [
     { label: "Precios", to: "/precios" as const },
     { label: "Demo en vivo", to: "/demo" as const },
@@ -23,8 +26,9 @@ export function Navbar() {
   return (
     <>
       <header
-        className="fixed top-0 left-0 right-0 z-[100] transition-all duration-300"
+        className="fixed left-0 right-0 z-[100] transition-all duration-300"
         style={{
+          top: headerTop,
           background: scrolled ? "rgba(8,14,29,0.92)" : "transparent",
           backdropFilter: scrolled ? "blur(20px) saturate(180%)" : "none",
           borderBottom: scrolled ? "1px solid var(--steel)" : "1px solid transparent",
