@@ -341,6 +341,12 @@
   animation: pulse-ring 2s infinite;
 }
 
+/* Skeleton shimmer (universal) */
+@keyframes brerev-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 /* Lenis */
 html.lenis,
 html.lenis body {
