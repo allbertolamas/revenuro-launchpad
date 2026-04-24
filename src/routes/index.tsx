@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import { SmoothScrollProvider } from "@/components/SmoothScrollProvider";
 import { MagneticCursor } from "@/components/MagneticCursor";
 import { ScrollProgress } from "@/components/ScrollProgress";
@@ -17,6 +18,11 @@ import { TwoPaths } from "@/components/sections/TwoPaths";
 import { FAQ } from "@/components/sections/FAQ";
 import { FinalCTA } from "@/components/sections/FinalCTA";
 import { Footer } from "@/components/sections/Footer";
+import { TopUrgencyBar } from "@/components/landing/TopUrgencyBar";
+import { FloatingSocialProof } from "@/components/landing/FloatingSocialProof";
+import { ExitIntentPopup } from "@/components/landing/ExitIntentPopup";
+import { VideoTestimonial } from "@/components/landing/VideoTestimonial";
+import { PoweredByBar } from "@/components/landing/PoweredByBar";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -46,12 +52,17 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const [topBarVisible, setTopBarVisible] = useState(false);
   return (
     <SmoothScrollProvider>
       <ScrollProgress />
       <MagneticCursor />
-      <Navbar />
-      <main className="overflow-hidden">
+      <TopUrgencyBar onVisibleChange={setTopBarVisible} />
+      <Navbar topOffset={topBarVisible ? 38 : 0} />
+      <main
+        className="overflow-hidden"
+        style={{ paddingTop: topBarVisible ? 38 : 0, transition: "padding-top 0.4s ease" }}
+      >
         <Hero />
         <LogoStrip />
         <StatsSection />
@@ -60,13 +71,17 @@ function Index() {
         <HowItWorks />
         <ReplacesTable />
         <FeaturesGrid />
+        <VideoTestimonial />
         <ChannelsSection />
         <PricingSection />
         <TwoPaths />
         <FAQ />
         <FinalCTA />
+        <PoweredByBar />
         <Footer />
       </main>
+      <FloatingSocialProof />
+      <ExitIntentPopup />
     </SmoothScrollProvider>
   );
 }
