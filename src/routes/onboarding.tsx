@@ -96,6 +96,103 @@ function OnboardingPage() {
       <WizardHeader step={step} />
 
       <main className="relative mx-auto max-w-[680px] px-5 pb-20 pt-28 sm:pt-32">
+        {/* Banner de recuperación de borrador */}
+        <AnimatePresence>
+          {resumeBanner && (
+            <motion.div
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.3 }}
+              className="mb-6 rounded-[14px] p-4 sm:p-5"
+              style={{
+                background: "rgba(30,95,255,0.08)",
+                border: "1px solid rgba(30,95,255,0.25)",
+              }}
+            >
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-start gap-3">
+                  <div
+                    className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full"
+                    style={{ background: "rgba(30,95,255,0.18)" }}
+                  >
+                    <RotateCcw size={16} style={{ color: "var(--electric)" }} />
+                  </div>
+                  <div>
+                    <p className="text-[14px] font-semibold text-[color:var(--platinum)]">
+                      Tienes un avance guardado
+                    </p>
+                    <p className="mt-0.5 text-[12px] text-[color:var(--slate)]">
+                      Última edición: {formatSavedAt(resumeBanner.lastSavedAt)} · Paso {resumeBanner.step} de 7
+                    </p>
+                  </div>
+                </div>
+                <div className="flex flex-shrink-0 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      clearDraft();
+                      setResumeBanner(null);
+                    }}
+                    className="rounded-[10px] px-3 py-2 text-[12px] font-medium text-[color:var(--slate)] transition-colors hover:bg-white/5 hover:text-[color:var(--platinum)]"
+                  >
+                    Empezar de nuevo
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setData(resumeBanner.data);
+                      setStep(resumeBanner.step);
+                      setResumeBanner(null);
+                    }}
+                    className="inline-flex items-center gap-1.5 rounded-[10px] px-3 py-2 text-[12px] font-semibold text-white transition-opacity hover:opacity-90"
+                    style={{ background: "var(--electric)" }}
+                  >
+                    Continuar donde lo dejé
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Indicador de auto-guardado */}
+        {step < 7 && (
+          <div
+            className="mb-4 flex items-center justify-end gap-1.5 text-[11px]"
+            style={{ color: "var(--slate)", minHeight: 16 }}
+            aria-live="polite"
+          >
+            <AnimatePresence mode="wait">
+              {saveStatus === "saving" && (
+                <motion.div
+                  key="saving"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="inline-flex items-center gap-1.5"
+                >
+                  <RefreshCw size={11} className="animate-spin" />
+                  Guardando…
+                </motion.div>
+              )}
+              {saveStatus === "saved" && (
+                <motion.div
+                  key="saved"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="inline-flex items-center gap-1.5"
+                  style={{ color: "var(--success)" }}
+                >
+                  <Check size={11} strokeWidth={3} />
+                  Guardado
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        )}
+
         <AnimatePresence mode="wait">
           <motion.div
             key={step}
