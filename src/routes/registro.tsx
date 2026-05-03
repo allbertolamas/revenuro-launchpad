@@ -187,23 +187,44 @@ function RegistroPage() {
                       onChange={(e) => setPwd(e.target.value)}
                     />
                     {pwd.length > 0 && (
-                      <div className="mt-2 flex gap-1">
-                        {[0, 1, 2].map((i) => (
-                          <div
-                            key={i}
-                            className="h-1 flex-1 rounded-full transition-colors"
-                            style={{
-                              background:
-                                i < pwdStrength
-                                  ? pwdStrength === 1
-                                    ? "var(--red-loss)"
-                                    : pwdStrength === 2
-                                    ? "var(--amber)"
-                                    : "var(--success)"
-                                  : "var(--steel)",
-                            }}
-                          />
-                        ))}
+                      <div className="mt-2">
+                        <div className="flex gap-1">
+                          {[0, 1, 2, 3].map((i) => (
+                            <div
+                              key={i}
+                              className="h-1 flex-1 rounded-full transition-colors"
+                              style={{
+                                background: i < pwdStrength ? pwdColor : "var(--steel)",
+                              }}
+                            />
+                          ))}
+                        </div>
+                        <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+                          <span
+                            className="text-[12px] font-semibold"
+                            style={{ color: pwdColor }}
+                          >
+                            {pwdLabel}
+                          </span>
+                          <div className="flex flex-wrap gap-x-3 gap-y-1">
+                            {pwdCriteria.map((c) => (
+                              <span
+                                key={c.label}
+                                className="inline-flex items-center gap-1 text-[11px]"
+                                style={{
+                                  color: c.ok ? "var(--success)" : "var(--slate)",
+                                }}
+                              >
+                                <Check
+                                  size={10}
+                                  strokeWidth={3}
+                                  style={{ opacity: c.ok ? 1 : 0.3 }}
+                                />
+                                {c.label}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>
