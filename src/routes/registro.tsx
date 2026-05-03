@@ -47,13 +47,31 @@ function RegistroPage() {
   const [yearly, setYearly] = useState(false);
   const [pwd, setPwd] = useState("");
 
-  const pwdStrength = (() => {
-    let s = 0;
-    if (pwd.length >= 8) s++;
-    if (/\d/.test(pwd)) s++;
-    if (/[A-Z]/.test(pwd) || /[^a-zA-Z0-9]/.test(pwd)) s++;
-    return s;
-  })();
+  const pwdCriteria = [
+    { label: "8+ caracteres", ok: pwd.length >= 8 },
+    { label: "1 mayúscula", ok: /[A-Z]/.test(pwd) },
+    { label: "1 número o símbolo", ok: /\d/.test(pwd) || /[^a-zA-Z0-9]/.test(pwd) },
+    { label: "12+ caracteres (recomendado)", ok: pwd.length >= 12 },
+  ];
+  const pwdStrength = pwdCriteria.filter((c) => c.ok).length;
+  const pwdColor =
+    pwdStrength <= 1
+      ? "var(--red-loss)"
+      : pwdStrength === 2
+      ? "var(--amber)"
+      : pwdStrength === 3
+      ? "var(--electric)"
+      : "var(--success)";
+  const pwdLabel =
+    pwd.length === 0
+      ? ""
+      : pwdStrength <= 1
+      ? "Débil"
+      : pwdStrength === 2
+      ? "Aceptable"
+      : pwdStrength === 3
+      ? "Fuerte"
+      : "Excelente";
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-grid" style={{ background: "var(--midnight)" }}>
