@@ -9,6 +9,7 @@ type Plan = {
   subtitle: string;
   features: string[];
   cta: string;
+  activeCount: number;
   highlight?: boolean;
   ghost?: boolean;
 };
