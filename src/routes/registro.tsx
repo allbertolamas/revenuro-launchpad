@@ -47,13 +47,31 @@ function RegistroPage() {
   const [yearly, setYearly] = useState(false);
   const [pwd, setPwd] = useState("");
 
-  const pwdStrength = (() => {
-    let s = 0;
-    if (pwd.length >= 8) s++;
-    if (/\d/.test(pwd)) s++;
-    if (/[A-Z]/.test(pwd) || /[^a-zA-Z0-9]/.test(pwd)) s++;
-    return s;
-  })();
+  const pwdCriteria = [
+    { label: "8+ caracteres", ok: pwd.length >= 8 },
+    { label: "1 mayúscula", ok: /[A-Z]/.test(pwd) },
+    { label: "1 número o símbolo", ok: /\d/.test(pwd) || /[^a-zA-Z0-9]/.test(pwd) },
+    { label: "12+ caracteres (recomendado)", ok: pwd.length >= 12 },
+  ];
+  const pwdStrength = pwdCriteria.filter((c) => c.ok).length;
+  const pwdColor =
+    pwdStrength <= 1
+      ? "var(--red-loss)"
+      : pwdStrength === 2
+      ? "var(--amber)"
+      : pwdStrength === 3
+      ? "var(--electric)"
+      : "var(--success)";
+  const pwdLabel =
+    pwd.length === 0
+      ? ""
+      : pwdStrength <= 1
+      ? "Débil"
+      : pwdStrength === 2
+      ? "Aceptable"
+      : pwdStrength === 3
+      ? "Fuerte"
+      : "Excelente";
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-grid" style={{ background: "var(--midnight)" }}>
@@ -169,23 +187,44 @@ function RegistroPage() {
                       onChange={(e) => setPwd(e.target.value)}
                     />
                     {pwd.length > 0 && (
-                      <div className="mt-2 flex gap-1">
-                        {[0, 1, 2].map((i) => (
-                          <div
-                            key={i}
-                            className="h-1 flex-1 rounded-full transition-colors"
-                            style={{
-                              background:
-                                i < pwdStrength
-                                  ? pwdStrength === 1
-                                    ? "var(--red-loss)"
-                                    : pwdStrength === 2
-                                    ? "var(--amber)"
-                                    : "var(--success)"
-                                  : "var(--steel)",
-                            }}
-                          />
-                        ))}
+                      <div className="mt-2">
+                        <div className="flex gap-1">
+                          {[0, 1, 2, 3].map((i) => (
+                            <div
+                              key={i}
+                              className="h-1 flex-1 rounded-full transition-colors"
+                              style={{
+                                background: i < pwdStrength ? pwdColor : "var(--steel)",
+                              }}
+                            />
+                          ))}
+                        </div>
+                        <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+                          <span
+                            className="text-[12px] font-semibold"
+                            style={{ color: pwdColor }}
+                          >
+                            {pwdLabel}
+                          </span>
+                          <div className="flex flex-wrap gap-x-3 gap-y-1">
+                            {pwdCriteria.map((c) => (
+                              <span
+                                key={c.label}
+                                className="inline-flex items-center gap-1 text-[11px]"
+                                style={{
+                                  color: c.ok ? "var(--success)" : "var(--slate)",
+                                }}
+                              >
+                                <Check
+                                  size={10}
+                                  strokeWidth={3}
+                                  style={{ opacity: c.ok ? 1 : 0.3 }}
+                                />
+                                {c.label}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>
