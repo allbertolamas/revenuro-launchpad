@@ -101,6 +101,7 @@ function PriceFlip({ price }: { price: number }) {
 
 export function PricingSection() {
   const [yearly, setYearly] = useState(false);
+  const [selected, setSelected] = useState<string | null>(null);
 
   return (
     <section
