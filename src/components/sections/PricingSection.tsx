@@ -19,6 +19,7 @@ const PLANS: Plan[] = [
     monthly: 99,
     yearly: 82,
     subtitle: "Para el asesor que quiere empezar a no perder leads",
+    activeCount: 47,
     features: [
       "1 agente activo",
       "WhatsApp + llamadas + formularios",
@@ -38,6 +39,7 @@ const PLANS: Plan[] = [
     monthly: 199,
     yearly: 165,
     subtitle: "Para el asesor serio que ya invierte en leads",
+    activeCount: 128,
     features: [
       "Todo lo del plan anterior",
       "Hasta 3 agentes activos",
@@ -61,6 +63,7 @@ const PLANS: Plan[] = [
     monthly: 399,
     yearly: 332,
     subtitle: "Para equipos que quieren máxima conversión",
+    activeCount: 23,
     features: [
       "Todo lo del plan anterior",
       "Hasta 5 agentes activos",
