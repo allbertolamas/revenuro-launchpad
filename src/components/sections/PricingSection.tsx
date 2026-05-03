@@ -155,21 +155,29 @@ export function PricingSection() {
 
         {/* Cards */}
         <div className="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-3 lg:items-stretch">
-          {PLANS.map((p, i) => (
+          {PLANS.map((p, i) => {
+            const isSelected = selected === p.name;
+            return (
             <motion.div
               key={p.name}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.15 }}
               transition={{ duration: 0.6, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className={`relative flex flex-col rounded-[18px] p-8 ${p.highlight ? "lg:scale-[1.03]" : ""}`}
+              animate={isSelected ? { scale: [1, 1.04, 1.02] } : {}}
+              onClick={() => setSelected(p.name)}
+              className={`relative flex cursor-pointer flex-col rounded-[18px] p-8 transition-all ${p.highlight ? "lg:scale-[1.03]" : ""}`}
               style={{
                 background: p.highlight ? "rgba(15,30,61,0.95)" : "var(--card-bg)",
-                border: p.highlight
+                border: isSelected
+                  ? "1px solid var(--electric)"
+                  : p.highlight
                   ? "1px solid rgba(30,95,255,0.4)"
                   : "1px solid var(--border-subtle)",
                 backdropFilter: "blur(12px)",
-                boxShadow: p.highlight
+                boxShadow: isSelected
+                  ? "0 0 0 2px rgba(30,95,255,0.35), 0 40px 80px rgba(0,0,0,0.5), 0 0 80px rgba(30,95,255,0.18)"
+                  : p.highlight
                   ? "0 0 0 1px rgba(30,95,255,0.2), 0 40px 80px rgba(0,0,0,0.5), 0 0 60px rgba(30,95,255,0.1)"
                   : "none",
               }}
@@ -183,6 +191,21 @@ export function PricingSection() {
                 </span>
               )}
 
+              <AnimatePresence>
+                {isSelected && (
+                  <motion.div
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0, opacity: 0 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 18 }}
+                    className="absolute right-4 top-4 flex h-7 w-7 items-center justify-center rounded-full text-white"
+                    style={{ background: "var(--electric)" }}
+                  >
+                    <Check size={14} strokeWidth={3} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
               <div>
                 <h3 className="text-[20px] font-bold text-[color:var(--platinum)]">{p.name}</h3>
                 <p className="mt-1 text-[14px] text-[color:var(--slate)]">{p.subtitle}</p>
@@ -190,6 +213,20 @@ export function PricingSection() {
 
               <div className="mt-6">
                 <PriceFlip price={yearly ? p.yearly : p.monthly} />
+              </div>
+
+              <div
+                className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium"
+                style={{
+                  background: "rgba(0,214,143,0.08)",
+                  color: "var(--success)",
+                }}
+              >
+                <span
+                  className="h-1.5 w-1.5 rounded-full"
+                  style={{ background: "var(--success)" }}
+                />
+                {p.activeCount} brokers activos en este plan
               </div>
 
               <ul className="mt-8 flex-1 space-y-3">
@@ -203,12 +240,16 @@ export function PricingSection() {
 
               <a
                 href="#cta-final"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
                 className={`mt-8 justify-center ${p.ghost ? "btn-ghost" : "btn-primary"}`}
               >
                 {p.cta} {!p.ghost && <span className="arrow">→</span>}
               </a>
             </motion.div>
-          ))}
+            );
+          })}
         </div>
 
         <p className="mt-10 text-center text-[13px] text-[color:var(--slate)]">
